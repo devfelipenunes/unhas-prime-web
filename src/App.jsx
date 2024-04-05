@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import AddService from "./pages/AddService";
 import Service from "./pages/Services";
 import Collaborators from "./pages/Collaborators";
+import Extract from "./pages/Extract";
 
 function App() {
   const location = useLocation();
@@ -42,6 +43,11 @@ function App() {
           exact
           path="/collaborators"
           element={<Collaborators />}
+        />
+        <Route
+          exact
+          path="/extract"
+          element={<Extract />}
         />
       </Routes>
     </>

@@ -1,43 +1,109 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
-import ServiceCard from "../partials/addService/ServiceCard";
-import CollaboratorCard from "../partials/addService/CollaboratorCard";
 import api from "../services/api";
 import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
+
+// Estilos para os modais
+const modalStyles = {
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  content: {
+    width: "90%",
+    margin: "auto",
+    height: "250px",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    background: "#fff",
+    borderRadius: "8px",
+    padding: "20px",
+  },
+};
 
 function Service() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [services, setServices] = useState([]);
+  const [showAddServiceModal, setShowAddServiceModal] = useState(false);
+  const [showEditServiceModal, setShowEditServiceModal] = useState(false);
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false);
+  const [serviceToDelete, setServiceToDelete] = useState(null);
+  const [serviceToEdit, setServiceToEdit] = useState(null);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
   const handleAddService = (data) => {
-    console.log(data);
     api
       .post("/servicos", data)
       .then((response) => {
-        console.log(response.data);
+        toast.success(response.data.message);
+        fetchData();
+        reset();
+        setShowAddServiceModal(false);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
+  const handleDeleteService = () => {
+    api
+      .delete(`/servicos/${serviceToDelete.id}`)
+      .then((response) => {
+        toast.success(response.data.message);
+        setShowDeleteConfirmationModal(false);
+        fetchData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleEditService = (data) => {
+    api
+      .put(`/servicos/${serviceToEdit.id}`, data)
+      .then((response) => {
+        toast.success(response.data.message);
+        fetchData();
+        setShowEditServiceModal(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchData = () => {
+    api
+      .get("/servicos")
+      .then((response) => {
+        setServices(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
 
-      {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-        {/*  Site header */}
         <Header
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -45,63 +111,154 @@ function Service() {
 
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Serviços</h1>
+              <ul>
+                {services.map((service) => (
+                  <li
+                    key={service.id}
+                    className="flex px-2"
+                  >
+                    <div className="grow flex items-center border-b border-slate-100 dark:border-slate-700 text-sm py-2">
+                      <div className="grow flex justify-between">
+                        <div className="self-center">{service.nome}</div>
+                        <div className="self-center">R${service.preco}</div>
+                        <div className="shrink-0 self-start ml-2 space-x-1">
+                          <button
+                            onClick={() => {
+                              setShowEditServiceModal(true);
+                              setServiceToEdit(service);
+                            }}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            edit
+                          </button>
+                          <button
+                            onClick={() => {
+                              setServiceToDelete(service);
+                              setShowDeleteConfirmationModal(true);
+                            }}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <button
+              onClick={() => setShowAddServiceModal(true)}
+              className="btn bg-indigo-500 hover:bg-indigo-600 text-white mt-4"
+            >
+              Adicionar Serviço
+            </button>
+          </div>
+          <Modal
+            isOpen={showAddServiceModal}
+            style={modalStyles}
+          >
             <form onSubmit={handleSubmit(handleAddService)}>
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="service-name"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Nome do Serviço
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="service-name"
-                      {...register("nome", { required: true })}
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                    {/* {errors.nome && (
-                      <span className="text-red-500">
-                        Este campo é obrigatório
-                      </span>
-                    )} */}
-                  </div>
-                </div>
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="service-value"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Valor
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="service-value"
-                      {...register("preco", { required: true })}
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                    {/* {errors.preco && (
-                      <span className="text-red-500">
-                        Este campo é obrigatório
-                      </span>
-                    )} */}
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-center mt-12">
+              <label htmlFor="service-name">Nome do Serviço</label>
+              <input
+                type="text"
+                id="service-name"
+                {...register("nome", { required: true })}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+
+              <label htmlFor="service-value">Valor</label>
+              <input
+                type="text"
+                id="service-value"
+                {...register("preco", { required: true })}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+
+              <div className="flex justify-center space-x-2 mt-11 ">
                 <button
                   type="submit"
                   className="btn bg-indigo-500 hover:bg-indigo-600 text-white"
                 >
                   Adicionar Serviço
                 </button>
+                <button
+                  onClick={() => setShowAddServiceModal(false)}
+                  className="btn bg-gray-300 hover:bg-gray-400 text-gray-700"
+                >
+                  Cancelar
+                </button>
               </div>
             </form>
-          </div>
+          </Modal>
+          <Modal
+            isOpen={showEditServiceModal}
+            style={modalStyles}
+          >
+            <form onSubmit={handleSubmit(handleEditService)}>
+              <label htmlFor="service-name">Nome do Serviço</label>
+              <input
+                type="text"
+                id="service-name"
+                placeholder={serviceToEdit?.nome}
+                {...register("nome", { required: true })}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+
+              <label htmlFor="service-value">Valor</label>
+              <input
+                type="text"
+                id="service-value"
+                placeholder={serviceToEdit?.preco}
+                {...register("preco", { required: true })}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+
+              <div className="flex justify-center space-x-2 mt-11 ">
+                <button
+                  type="submit"
+                  className="btn bg-indigo-500 hover:bg-indigo-600 text-white"
+                >
+                  Adicionar Serviço
+                </button>
+                <button
+                  onClick={() => setShowEditServiceModal(false)}
+                  className="btn bg-gray-300 hover:bg-gray-400 text-gray-700"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </Modal>
+
+          <Modal
+            isOpen={showDeleteConfirmationModal}
+            style={modalStyles}
+          >
+            <p>
+              Deseja realmente excluir o serviço{" "}
+              {serviceToDelete && serviceToDelete.nome}?
+            </p>
+            <div className="flex justify-center space-x-2 mt-11">
+              <button
+                onClick={handleDeleteService}
+                className="btn bg-red-500 hover:bg-red-600 text-white"
+              >
+                Sim
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirmationModal(false)}
+                className="btn bg-gray-300 hover:bg-gray-400 text-gray-700"
+              >
+                Cancelar
+              </button>
+            </div>
+          </Modal>
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }

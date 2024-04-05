@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import Sidebar from '../partials/Sidebar';
-import Header from '../partials/Header';
-import ServiceCard from '../partials/addService/ServiceCard';
-import CollaboratorCard from '../partials/addService/CollaboratorCard';
-import api from '../services/api';
+import Sidebar from "../partials/Sidebar";
+import Header from "../partials/Header";
+import ServiceCard from "../partials/addService/ServiceCard";
+import CollaboratorCard from "../partials/addService/CollaboratorCard";
+import api from "../services/api";
+import toast, { Toaster } from "react-hot-toast";
 
 function AddService() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,13 +21,15 @@ function AddService() {
   };
 
   const handleAddService = () => {
-
     api
       .post("/sales", {
         collaboratorId: selectedCollaborator,
         servicoId: selectedService,
       })
       .then((response) => {
+        toast.success("Adicionado com sucesso!");
+
+        window.location.reload();
         console.log(response.data);
       })
       .catch((error) => {
@@ -37,33 +40,41 @@ function AddService() {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
 
       {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         {/*  Site header */}
-        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Header
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
 
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto space-y-9">
-            <ServiceCard 
+            <ServiceCard
               selectedService={selectedService}
               handleServiceSelect={handleServiceSelect}
             />
-            <CollaboratorCard 
+            <CollaboratorCard
               selectedCollaborator={selectedCollaborator}
               handleCollaboratorSelect={handleCollaboratorSelect}
             />
-            <div
-            className='flex justify-center'
-            >
+            <div className="flex justify-center">
               <button
-              onClick={handleAddService}
-              className="btn bg-indigo-500 hover:bg-indigo-600 text-white">Adicionar Serviço</button>
+                onClick={handleAddService}
+                className="btn bg-indigo-500 hover:bg-indigo-600 text-white"
+              >
+                Adicionar Serviço
+              </button>
             </div>
           </div>
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }
