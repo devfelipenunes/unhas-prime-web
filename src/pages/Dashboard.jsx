@@ -112,7 +112,7 @@ function Dashboard() {
               <DashboardCard07 data={filteredData} />
               <DashboardCard10 data={filteredData} />
 
-              <DashboardCard13 />
+              {/* <DashboardCard13 /> */}
             </div>
           </div>
         </main>
