@@ -90,6 +90,8 @@ function ExtractCard({ data }) {
             0
           );
           const dadosOrdenados = obterDadosOrdenados(dia);
+          console.log(dadosOrdenados);
+
           return (
             <div
               key={dia}
@@ -130,6 +132,9 @@ function ExtractCard({ data }) {
                         </button>
                       </th>
                       <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-center">Metodo</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
                         <button
                           onClick={() =>
                             alterarOrdenacaoPorDia(dia, compararPorData)
@@ -157,6 +162,11 @@ function ExtractCard({ data }) {
                         <td className="p-2 whitespace-nowrap">
                           <div className="text-center font-medium text-green-500">
                             R$ {collaborator.servico_preco}
+                          </div>
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="text-center font-medium text-green-500">
+                            {collaborator.sale_paymentMethod}
                           </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">

@@ -88,6 +88,7 @@ function ExtractCardByCollaborator({ data }) {
                         </tr>
                       ))}
                       {/* Calcular e exibir o total do colaborador */}
+
                       <tr>
                         <td
                           colSpan="3"
@@ -110,6 +111,39 @@ function ExtractCardByCollaborator({ data }) {
                           </div>
                         </td>
                       </tr>
+
+                      {/* Calcular e exibir a porcentagem do colaborador 
+                      <tr>
+                        <td
+                          colSpan="3"
+                          className="p-2 whitespace-nowrap text-right"
+                        >
+                          <div className="font-medium">
+                            Porcentagem do Colaborador:
+                          </div>
+                        </td>
+                        <td className="p-2 whitespace-nowrap ">
+                          <div className="font-medium  text-green-500 text-end">
+                            {(
+                              (groupedData[date][collaboratorId].reduce(
+                                (total, sale) =>
+                                  total + parseFloat(sale.servico_preco),
+                                0
+                              ) *
+                                parseFloat(
+                                  groupedData[date][collaboratorId][0]
+                                    .collaborator_percentage
+                                )) /
+                              groupedData[date][collaboratorId].reduce(
+                                (total, sale) =>
+                                  total + parseFloat(sale.servico_preco),
+                                0
+                              )
+                            ).toFixed(2)}
+                          </div>
+                        </td>
+                      </tr>
+                              */}
                     </tbody>
                   </table>
                 </div>

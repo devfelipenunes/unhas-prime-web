@@ -5,6 +5,7 @@ import Header from "../partials/Header";
 import api from "../services/api";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import CollaboratorsCard from "../partials/collaborators/CollaboratorsCard";
 
 // Estilos para os modais
 const modalStyles = {
@@ -99,6 +100,16 @@ function Collaborators() {
       });
   };
 
+  function handleEditCollaboratorModal(collaborator) {
+    setCollaboratorToEdit(collaborator);
+    setShowEditCollaboratorModal(true);
+  }
+
+  function handleDeleteCollaboratorModal(collaborator) {
+    setCollaboratorToDelete(collaborator);
+    setShowDeleteConfirmationModal(true);
+  }
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar
@@ -114,46 +125,11 @@ function Collaborators() {
 
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-              Colaboradores
-            </h1>
-            <div className="w-full max-w-9xl mx-auto">
-              <ul className="flex items-center justify-between mt-12">
-                <li>Nome</li>
-                <li>Ações</li>
-              </ul>
-              <ul>
-                {collaborators.map((collaborator) => (
-                  <li key={collaborator.id}>
-                    <div className="flex items-center justify-between mt-4">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        {collaborator.nome}
-                      </p>
-                      <div>
-                        <button
-                          onClick={() => {
-                            setCollaboratorToEdit(collaborator);
-                            setShowEditCollaboratorModal(true);
-                          }}
-                          className="ml-2 btn bg-indigo-500 hover:bg-indigo-600 text-white"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => {
-                            setCollaboratorToDelete(collaborator);
-                            setShowDeleteConfirmationModal(true);
-                          }}
-                          className="ml-2 btn bg-red-500 hover:bg-red-600 text-white"
-                        >
-                          Excluir
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <CollaboratorsCard
+              data={collaborators}
+              handleDeleteCollaborator={handleDeleteCollaboratorModal}
+              handleEditCollaborator={handleEditCollaboratorModal}
+            />
             <div className="flex justify-center mt-10">
               <button
                 onClick={() => setShowAddCollaboratorModal(true)}
@@ -229,14 +205,32 @@ function Collaborators() {
             style={modalStyles}
           >
             <form onSubmit={handleSubmit(handleEditCollaborator)}>
-              <label htmlFor="collaborator-name">Nome do Colaborador</label>
-              <input
-                type="text"
-                id="collaborator-name"
-                defaultValue={collaboratorToEdit ? collaboratorToEdit.nome : ""}
-                {...register("nome", { required: true })}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+              <div>
+                <div>
+                  <label htmlFor="collaborator-name">Nome do Colaborador</label>
+                  <input
+                    type="text"
+                    id="collaborator-name"
+                    defaultValue={
+                      collaboratorToEdit ? collaboratorToEdit.nome : ""
+                    }
+                    {...register("nome", { required: true })}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="mt-6">
+                  <label htmlFor="collaborator-name">Porcentagem</label>
+                  <input
+                    type="text"
+                    id="collaborator-name"
+                    defaultValue={
+                      collaboratorToEdit ? collaboratorToEdit.percentage : ""
+                    }
+                    {...register("percentage", { required: true })}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
 
               <div className="flex justify-center space-x-2 mt-11">
                 <button
@@ -257,9 +251,25 @@ function Collaborators() {
 
           <Modal
             isOpen={showDeleteConfirmationModal}
-            style={modalStyles}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                width: "250px",
+                margin: "auto",
+                height: "180px",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "20px",
+              },
+            }}
           >
-            <p>
+            <p className="text-center">
               Deseja realmente excluir o colaborador{" "}
               {collaboratorToDelete && collaboratorToDelete.nome}?
             </p>

@@ -5,6 +5,7 @@ import Header from "../partials/Header";
 import api from "../services/api";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import ServiceCard from "../partials/service/ServiceCard";
 
 // Estilos para os modais
 const modalStyles = {
@@ -95,6 +96,15 @@ function Service() {
   useEffect(() => {
     fetchData();
   }, []);
+  function handleEditServiceModal(service) {
+    setShowEditServiceModal(true);
+    setServiceToEdit(service);
+  }
+
+  function handleDeleteServiceModal(service) {
+    setShowDeleteConfirmationModal(true);
+    setServiceToDelete(service);
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -111,50 +121,20 @@ function Service() {
 
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Serviços</h1>
-              <ul>
-                {services.map((service) => (
-                  <li
-                    key={service.id}
-                    className="flex px-2"
-                  >
-                    <div className="grow flex items-center border-b border-slate-100 dark:border-slate-700 text-sm py-2">
-                      <div className="grow flex justify-between">
-                        <div className="self-center">{service.nome}</div>
-                        <div className="self-center">R${service.preco}</div>
-                        <div className="shrink-0 self-start ml-2 space-x-1">
-                          <button
-                            onClick={() => {
-                              setShowEditServiceModal(true);
-                              setServiceToEdit(service);
-                            }}
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            edit
-                          </button>
-                          <button
-                            onClick={() => {
-                              setServiceToDelete(service);
-                              setShowDeleteConfirmationModal(true);
-                            }}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+            <ServiceCard
+              data={services}
+              handleEditService={handleEditServiceModal}
+              handleDeleteService={handleDeleteServiceModal}
+            />
+
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={() => setShowAddServiceModal(true)}
+                className="btn bg-indigo-500 hover:bg-indigo-600 text-white mt-4"
+              >
+                Adicionar Serviço
+              </button>
             </div>
-            <button
-              onClick={() => setShowAddServiceModal(true)}
-              className="btn bg-indigo-500 hover:bg-indigo-600 text-white mt-4"
-            >
-              Adicionar Serviço
-            </button>
           </div>
           <Modal
             isOpen={showAddServiceModal}
