@@ -28,10 +28,15 @@ function DashboardCard07({ data }) {
         totalAllServices += parseFloat(service.servico_preco);
       });
 
-      // Ordena os serviços pelo preço total de forma decrescente
-      const sortedServices = Object.entries(servicesMap).sort(
-        (a, b) => b[1].total - a[1].total
+      // Transforma o objeto em uma matriz de pares chave-valor
+      const servicesArray = Object.entries(servicesMap);
+
+      // Ordena o array pelo número de serviços (quantidade)
+      const sortedServices = servicesArray.sort(
+        (a, b) => b[1].count - a[1].count
       );
+
+      // Converte o array ordenado de volta para um objeto
       const sortedServicesMap = Object.fromEntries(sortedServices);
 
       return { servicesMap: sortedServicesMap, totalAllServices };
@@ -71,12 +76,10 @@ function DashboardCard07({ data }) {
             {/* Table body */}
             <tbody className="text-sm font-medium divide-y divide-slate-100 dark:divide-slate-700">
               {/* Rows */}
-              {Object.keys(servicesMap).map((serviceName) => (
+              {Object.entries(servicesMap).map(([serviceName, serviceInfo]) => (
                 <tr key={serviceName}>
                   <td className="p-2">
-                    <div className="text-left">
-                      {servicesMap[serviceName].count}
-                    </div>
+                    <div className="text-left">{serviceInfo.count}</div>
                   </td>
                   <td className="p-2">
                     <div className="text-center">
@@ -87,7 +90,7 @@ function DashboardCard07({ data }) {
                   </td>
                   <td className="p-2">
                     <div className="text-end text-emerald-500">
-                      R$ {servicesMap[serviceName].total.toFixed(2)}
+                      R$ {serviceInfo.total.toFixed(2)}
                     </div>
                   </td>
                 </tr>

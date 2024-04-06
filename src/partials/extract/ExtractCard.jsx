@@ -55,7 +55,7 @@ function ExtractCard({ data }) {
     const horas = data.getHours();
     const minutos = data.getMinutes();
     const segundos = data.getSeconds();
-    return `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`;
+    return `${dia}/${mes}/${ano} - ${horas}:${minutos}:${segundos}`;
   }
 
   // Função para alterar a ordenação de um determinado dia

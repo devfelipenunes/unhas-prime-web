@@ -51,6 +51,7 @@ function Collaborators() {
     api
       .get("/collaborators")
       .then((response) => {
+        console.log(response.data);
         setCollaborators(response.data);
       })
       .catch((error) => {
@@ -165,17 +166,47 @@ function Collaborators() {
 
           <Modal
             isOpen={showAddCollaboratorModal}
-            style={modalStyles}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                width: "90%",
+                height: "300px",
+                position: "relative",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "20px",
+              },
+            }}
           >
-            <form onSubmit={handleSubmit(handleAddCollaborator)}>
-              <label htmlFor="collaborator-name">Nome do Colaborador</label>
-              <input
-                type="text"
-                id="collaborator-name"
-                {...register("nome", { required: true })}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-
+            <form
+              className="flex flex-col justify-center"
+              onSubmit={handleSubmit(handleAddCollaborator)}
+            >
+              <div className="flex flex-col space-y-6">
+                <div>
+                  <label htmlFor="collaborator-name">Nome do Colaborador</label>
+                  <input
+                    type="text"
+                    id="collaborator-name"
+                    {...register("nome", { required: true })}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="collaborator-name">Porcentagem</label>
+                  <input
+                    type="text"
+                    id="collaborator-name"
+                    {...register("percentage", { required: true })}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
               <div className="flex justify-center space-x-2 mt-11">
                 <button
                   type="submit"
