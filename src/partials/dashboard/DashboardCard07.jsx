@@ -1,4 +1,3 @@
-// DashboardCard07.js
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../services/api";
@@ -29,7 +28,13 @@ function DashboardCard07({ data }) {
         totalAllServices += parseFloat(service.servico_preco);
       });
 
-      return { servicesMap, totalAllServices };
+      // Ordena os serviços pelo preço total de forma decrescente
+      const sortedServices = Object.entries(servicesMap).sort(
+        (a, b) => b[1].total - a[1].total
+      );
+      const sortedServicesMap = Object.fromEntries(sortedServices);
+
+      return { servicesMap: sortedServicesMap, totalAllServices };
     };
 
     const { servicesMap, totalAllServices } = calculateTotalPrices();

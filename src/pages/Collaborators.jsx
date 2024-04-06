@@ -51,7 +51,6 @@ function Collaborators() {
     api
       .get("/collaborators")
       .then((response) => {
-        console.log(response.data);
         setCollaborators(response.data);
       })
       .catch((error) => {
@@ -114,42 +113,54 @@ function Collaborators() {
 
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Colaboradores
-              </h1>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+              Colaboradores
+            </h1>
+            <div className="w-full max-w-9xl mx-auto">
+              <ul className="flex items-center justify-between mt-12">
+                <li>Nome</li>
+                <li>Ações</li>
+              </ul>
               <ul>
                 {collaborators.map((collaborator) => (
                   <li key={collaborator.id}>
-                    {collaborator.nome}
-                    <button
-                      onClick={() => {
-                        setCollaboratorToEdit(collaborator);
-                        setShowEditCollaboratorModal(true);
-                      }}
-                      className="ml-2 btn bg-indigo-500 hover:bg-indigo-600 text-white"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => {
-                        setCollaboratorToDelete(collaborator);
-                        setShowDeleteConfirmationModal(true);
-                      }}
-                      className="ml-2 btn bg-red-500 hover:bg-red-600 text-white"
-                    >
-                      Excluir
-                    </button>
+                    <div className="flex items-center justify-between mt-4">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {collaborator.nome}
+                      </p>
+                      <div>
+                        <button
+                          onClick={() => {
+                            setCollaboratorToEdit(collaborator);
+                            setShowEditCollaboratorModal(true);
+                          }}
+                          className="ml-2 btn bg-indigo-500 hover:bg-indigo-600 text-white"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => {
+                            setCollaboratorToDelete(collaborator);
+                            setShowDeleteConfirmationModal(true);
+                          }}
+                          className="ml-2 btn bg-red-500 hover:bg-red-600 text-white"
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </div>
                   </li>
                 ))}
               </ul>
             </div>
-            <button
-              onClick={() => setShowAddCollaboratorModal(true)}
-              className="btn bg-indigo-500 hover:bg-indigo-600 text-white mt-4"
-            >
-              Adicionar Colaborador
-            </button>
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={() => setShowAddCollaboratorModal(true)}
+                className="btn bg-indigo-500 hover:bg-indigo-600 text-white mt-4"
+              >
+                Adicionar Colaborador
+              </button>
+            </div>
           </div>
 
           <Modal

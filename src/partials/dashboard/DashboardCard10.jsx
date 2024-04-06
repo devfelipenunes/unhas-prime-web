@@ -1,4 +1,3 @@
-// DashboardCard10.js
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import api from "../../services/api";
@@ -24,10 +23,12 @@ function DashboardCard10({ data }) {
       return acc;
     }, {});
 
-    // Formata os dados para exibição
-    const formattedCollaborators = Object.values(salesByCollaborator);
+    // Ordena os colaboradores pelo total gasto de forma decrescente
+    const sortedCollaborators = Object.values(salesByCollaborator).sort(
+      (a, b) => b.spent - a.spent
+    );
 
-    setCollaborators(formattedCollaborators);
+    setCollaborators(sortedCollaborators);
   }, [data]);
 
   return (
