@@ -29,12 +29,13 @@ function CollaboratorCard({ selectedCollaborator, handleCollaboratorSelect }) {
             {/* Table body */}
             <tbody className="text-sm divide-y divide-slate-100 dark:divide-slate-700">
               {collaborators.map((collaborator) => {
+                console.log(collaborator);
                 return (
                   <tr
                     key={collaborator.id}
-                    onClick={() => handleCollaboratorSelect(collaborator.id)}
+                    onClick={() => handleCollaboratorSelect(collaborator)}
                     className={
-                      selectedCollaborator === collaborator.id
+                      selectedCollaborator?.id === collaborator?.id
                         ? "bg-indigo-600 cursor-pointer "
                         : "cursor-pointer"
                     }
@@ -42,7 +43,7 @@ function CollaboratorCard({ selectedCollaborator, handleCollaboratorSelect }) {
                     <td className="p-2 whitespace-nowrap">
                       <div
                         className={
-                          selectedCollaborator === collaborator.id
+                          selectedCollaborator?.id === collaborator?.id
                             ? "font-medium text-white"
                             : "font-medium text-slate-800 dark:text-slate-100"
                         }

@@ -10,11 +10,13 @@ function DashboardCard10({ data }) {
     const salesByCollaborator = data.reduce((acc, sale) => {
       const collaboratorId = sale.collaborator_id;
       const salePrice = parseFloat(sale.servico_preco);
+      const collaboratorPercentage = sale.collaborator_percentage;
 
       if (!acc[collaboratorId]) {
         acc[collaboratorId] = {
           name: sale.collaborator_nome,
           spent: salePrice,
+          percentage: collaboratorPercentage,
         };
       } else {
         acc[collaboratorId].spent += salePrice;
@@ -56,6 +58,7 @@ function DashboardCard10({ data }) {
             {/* Table body */}
             <tbody className="text-sm divide-y divide-slate-100 dark:divide-slate-700">
               {collaborators.map((collaborator) => {
+                console.log(collaborator);
                 return (
                   <tr key={collaborator.name}>
                     <td className="p-2 whitespace-nowrap">

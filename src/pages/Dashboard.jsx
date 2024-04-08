@@ -91,7 +91,7 @@ function Dashboard() {
             </div>
 
             {/* Cards */}
-            <div className="grid grid-cols-12 gap-6">
+            <div className="w-full flex flex-col space-y-7">
               <DashboardCard07 data={filteredData} />
               <DashboardCard10 data={filteredData} />
 

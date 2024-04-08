@@ -147,7 +147,7 @@ function Collaborators() {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
               },
               content: {
-                width: "90%",
+                width: 300,
                 height: "300px",
                 position: "relative",
                 top: "50%",
@@ -202,7 +202,22 @@ function Collaborators() {
 
           <Modal
             isOpen={showEditCollaboratorModal}
-            style={modalStyles}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                width: 300,
+                height: 300,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "20px",
+              },
+            }}
           >
             <form onSubmit={handleSubmit(handleEditCollaborator)}>
               <div>
@@ -257,7 +272,6 @@ function Collaborators() {
               },
               content: {
                 width: "250px",
-                margin: "auto",
                 height: "180px",
                 position: "absolute",
                 top: "50%",

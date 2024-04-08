@@ -25,9 +25,10 @@ function AddService() {
   const handleAddService = () => {
     api
       .post("/sales", {
-        collaboratorId: selectedCollaborator,
+        collaboratorId: selectedCollaborator.id,
         servicoId: selectedService,
         paymentMethod: selectedPaymentMethod,
+        collaboratorPercentage: selectedCollaborator.percentage,
       })
       .then((response) => {
         toast.success("Adicionado com sucesso!");
@@ -41,6 +42,8 @@ function AddService() {
         console.log(error);
       });
   };
+
+  console.log(selectedCollaborator);
 
   const handleButtonClick = (method) => {
     setSelectedPaymentMethod(method);

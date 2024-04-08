@@ -7,25 +7,6 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import ServiceCard from "../partials/service/ServiceCard";
 
-// Estilos para os modais
-const modalStyles = {
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  content: {
-    width: "90%",
-    margin: "auto",
-    height: "250px",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    background: "#fff",
-    borderRadius: "8px",
-    padding: "20px",
-  },
-};
-
 function Service() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [services, setServices] = useState([]);
@@ -138,7 +119,22 @@ function Service() {
           </div>
           <Modal
             isOpen={showAddServiceModal}
-            style={modalStyles}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                width: 300,
+                height: "250px",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "20px",
+              },
+            }}
           >
             <form onSubmit={handleSubmit(handleAddService)}>
               <label htmlFor="service-name">Nome do Serviço</label>
@@ -175,27 +171,49 @@ function Service() {
           </Modal>
           <Modal
             isOpen={showEditServiceModal}
-            style={modalStyles}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                width: 300,
+
+                height: "250px",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "20px",
+              },
+            }}
           >
-            <form onSubmit={handleSubmit(handleEditService)}>
-              <label htmlFor="service-name">Nome do Serviço</label>
-              <input
-                type="text"
-                id="service-name"
-                placeholder={serviceToEdit?.nome}
-                {...register("nome", { required: true })}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit(handleEditService)}
+            >
+              <div>
+                <label htmlFor="service-name">Nome do Serviço</label>
+                <input
+                  type="text"
+                  id="service-name"
+                  placeholder={serviceToEdit?.nome}
+                  {...register("nome", { required: true })}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
 
-              <label htmlFor="service-value">Valor</label>
-              <input
-                type="text"
-                id="service-value"
-                placeholder={serviceToEdit?.preco}
-                {...register("preco", { required: true })}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-
+              <div>
+                <label htmlFor="service-value">Valor</label>
+                <input
+                  type="text"
+                  id="service-value"
+                  placeholder={serviceToEdit?.preco}
+                  {...register("preco", { required: true })}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
               <div className="flex justify-center space-x-2 mt-11 ">
                 <button
                   type="submit"
@@ -215,9 +233,24 @@ function Service() {
 
           <Modal
             isOpen={showDeleteConfirmationModal}
-            style={modalStyles}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                width: 300,
+                height: 200,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "20px",
+              },
+            }}
           >
-            <p>
+            <p className="text-center">
               Deseja realmente excluir o serviço{" "}
               {serviceToDelete && serviceToDelete.nome}?
             </p>

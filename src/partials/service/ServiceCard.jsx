@@ -54,7 +54,7 @@ function ServiceCard({ data, handleDeleteService, handleEditService }) {
                   <td className="p-2">
                     <div className="text-center">
                       <div className="text-slate-800 dark:text-slate-100">
-                        {service.preco}
+                        R$ {service.preco}
                       </div>
                     </div>
                   </td>

@@ -12,7 +12,6 @@ function DashboardCard07({ data }) {
       const servicesMap = {};
       let totalAllServices = 0;
 
-      // Agrupando os serviços pelo nome
       data.forEach((service) => {
         if (!servicesMap[service.servico_nome]) {
           servicesMap[service.servico_nome] = {
@@ -49,7 +48,7 @@ function DashboardCard07({ data }) {
   }, [data]);
 
   return (
-    <div className="col-span-full xl:col-span-8 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
+    <div className="col-span-full xl:col-span-8 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 ">
       <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
         <h2 className="font-semibold text-slate-800 dark:text-slate-100">
           Top Serviços
@@ -74,7 +73,7 @@ function DashboardCard07({ data }) {
               </tr>
             </thead>
             {/* Table body */}
-            <tbody className="text-sm font-medium divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody className="text-sm font-medium divide-y divide-slate-100 dark:divide-slate-700 max-h-80 overflow-y-auto">
               {/* Rows */}
               {Object.entries(servicesMap).map(([serviceName, serviceInfo]) => (
                 <tr key={serviceName}>
