@@ -6,24 +6,36 @@ function ExtractCardByCollaborator({ data }) {
   const [groupedData, setGroupedData] = useState({});
 
   useEffect(() => {
-    // Função para agrupar os dados por dia e colaborador
     function groupDataByDayAndCollaborator(data) {
       const grouped = {};
       data.forEach((item) => {
-        const date = new Date(item.sale_created_at).toLocaleDateString("pt-BR"); // Formatar data para o formato brasileiro
-        const time = new Date(item.sale_created_at).toLocaleTimeString("pt-BR"); // Formatar hora para o formato brasileiro
-        const dateTime = `${date} - ${time}`; // Concatenar data e hora
+        const date = new Date(item.sale_created_at).toLocaleDateString("pt-BR");
+        const time = new Date(item.sale_created_at).toLocaleTimeString("pt-BR");
+        const dateTime = `${date} - ${time}`;
         const collaboratorId = item.collaborator_id;
         if (!grouped[date]) {
           grouped[date] = {};
         }
         if (!grouped[date][collaboratorId]) {
-          grouped[date][collaboratorId] = [];
+          grouped[date][collaboratorId] = {
+            name: item.collaborator_nome,
+            totalSales: 0,
+            totalCommission: 0,
+            sales: [],
+          };
         }
-        grouped[date][collaboratorId].push({
-          ...item,
-          sale_created_at: dateTime,
-        }); // Incluir a nova data/hora formatada
+        const salePrice = parseFloat(item.servico_preco);
+        const commissionPercentage =
+          parseFloat(item.collaborator_percentage) / 100;
+        const commissionEarned = salePrice * commissionPercentage;
+        grouped[date][collaboratorId].totalSales += salePrice;
+        grouped[date][collaboratorId].totalCommission += commissionEarned;
+        grouped[date][collaboratorId].sales.push({
+          service: item.servico_nome,
+          price: salePrice,
+          commission: commissionEarned,
+          dateTime: dateTime,
+        });
       });
       return grouped;
     }
@@ -39,7 +51,6 @@ function ExtractCardByCollaborator({ data }) {
         </h2>
       </header>
       <div className="p-3">
-        {/* Renderizar grupos */}
         {Object.keys(groupedData).map((date) => (
           <div
             key={date}
@@ -51,102 +62,96 @@ function ExtractCardByCollaborator({ data }) {
                 key={collaboratorId}
                 className="mb-4"
               >
+                <h4 className="text-base font-semibold mb-2">
+                  {groupedData[date][collaboratorId].name}
+                </h4>
                 <div className="overflow-x-auto">
-                  <table className="table-auto w-full">
+                  <table className="w-full border-collapse">
                     <thead className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50">
                       <tr>
-                        <th className="p-2 whitespace-nowrap">Nome</th>
-                        <th className="p-2 whitespace-nowrap">Serviço</th>
-                        <th className="p-2 whitespace-nowrap">Valor</th>
-                        <th className="p-2 whitespace-nowrap">Data</th>
+                        <th className="p-2 border border-slate-100 dark:border-slate-700">
+                          Serviço
+                        </th>
+                        <th className="p-2 border border-slate-100 dark:border-slate-700">
+                          Valor
+                        </th>
+                        <th className="p-2 border border-slate-100 dark:border-slate-700">
+                          Comissão
+                        </th>
+                        <th className="p-2 border border-slate-100 dark:border-slate-700">
+                          Data
+                        </th>
                       </tr>
                     </thead>
-                    {/* Tabela body */}
                     <tbody className="text-sm divide-y divide-slate-100 dark:divide-slate-700">
-                      {groupedData[date][collaboratorId].map((sale) => (
-                        <tr key={sale.id}>
-                          <td className="p-2 whitespace-nowrap">
-                            <div className="font-medium text-slate-800 dark:text-slate-100">
-                              {sale.collaborator_nome}
-                            </div>
-                          </td>
-                          <td className="p-2 whitespace-nowrap">
-                            <div className="font-medium text-slate-800 text-center dark:text-slate-100">
-                              {sale.servico_nome}
-                            </div>
-                          </td>
-                          <td className="p-2 whitespace-nowrap">
-                            <div className="text-center font-medium text-green-500">
-                              R$ {sale.servico_preco}
-                            </div>
-                          </td>
-                          <td className="p-2 whitespace-nowrap">
-                            <div className="text-end font-medium text-green-500">
-                              {sale.sale_created_at}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                      {/* Calcular e exibir o total do colaborador */}
-
-                      <tr>
-                        <td
-                          colSpan="3"
-                          className="p-2 whitespace-nowrap text-right"
-                        >
-                          <div className="font-medium">
-                            Total do Colaborador:
-                          </div>
-                        </td>
-                        <td className="p-2 whitespace-nowrap ">
-                          <div className="font-medium  text-green-500 text-end">
-                            R${" "}
-                            {groupedData[date][collaboratorId]
-                              .reduce(
-                                (total, sale) =>
-                                  total + parseFloat(sale.servico_preco),
-                                0
-                              )
-                              .toFixed(2)}
-                          </div>
-                        </td>
-                      </tr>
-
-                      {/* Calcular e exibir a porcentagem do colaborador 
-                      <tr>
-                        <td
-                          colSpan="3"
-                          className="p-2 whitespace-nowrap text-right"
-                        >
-                          <div className="font-medium">
-                            Porcentagem do Colaborador:
-                          </div>
-                        </td>
-                        <td className="p-2 whitespace-nowrap ">
-                          <div className="font-medium  text-green-500 text-end">
-                            {(
-                              (groupedData[date][collaboratorId].reduce(
-                                (total, sale) =>
-                                  total + parseFloat(sale.servico_preco),
-                                0
-                              ) *
-                                parseFloat(
-                                  groupedData[date][collaboratorId][0]
-                                    .collaborator_percentage
-                                )) /
-                              groupedData[date][collaboratorId].reduce(
-                                (total, sale) =>
-                                  total + parseFloat(sale.servico_preco),
-                                0
-                              )
-                            ).toFixed(2)}
-                          </div>
-                        </td>
-                      </tr>
-                              */}
+                      {groupedData[date][collaboratorId].sales.map(
+                        (sale, index) => (
+                          <tr key={index}>
+                            <td className="p-2 border text-center border-slate-100 dark:border-slate-700">
+                              {sale.service}
+                            </td>
+                            <td className="p-2 border text-center border-slate-100 dark:border-slate-700">
+                              R$ {sale.price.toFixed(2)}
+                            </td>
+                            <td className="p-2 border text-center border-slate-100 dark:border-slate-700">
+                              R$ {sale.commission.toFixed(2)}
+                            </td>
+                            <td className="p-2 border text-center border-slate-100 dark:border-slate-700">
+                              {sale.dateTime}
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>
+                <tr className="flex flex-col">
+                  <div className="w-full flex justify-end">
+                    <td
+                      colSpan="3"
+                      className="p-2 border border-slate-100 dark:border-slate-700 text-right"
+                    >
+                      <div className="font-semibold">Total de Vendas: </div>
+                    </td>
+                    <td className="p-2 border border-slate-100 dark:border-slate-700 text-end">
+                      <div className="font-semibold text-green-500">
+                        R${" "}
+                        {groupedData[date][collaboratorId].totalSales.toFixed(
+                          2
+                        )}
+                      </div>
+                    </td>
+                  </div>
+
+                  <div className="w-full flex justify-end">
+                    <td
+                      colSpan="3"
+                      className="p-2 border border-slate-100 dark:border-slate-700 text-right "
+                    >
+                      <div className="font-semibold">Total de Comissão:</div>
+                    </td>
+                    <td className="p-2 border border-slate-100 dark:border-slate-700 text-end">
+                      <div className="font-semibold text-green-500">
+                        R${" "}
+                        {groupedData[date][
+                          collaboratorId
+                        ].totalCommission.toFixed(2)}
+                      </div>
+                    </td>
+                  </div>
+                </tr>
+                {/* <div className="mt-2 text-right">
+                  <p className="font-semibold">
+                    Total de Vendas: R${" "}
+                    {groupedData[date][collaboratorId].totalSales.toFixed(2)}
+                  </p>
+                  <p className="font-semibold">
+                    Total de Comissão: R${" "}
+                    {groupedData[date][collaboratorId].totalCommission.toFixed(
+                      2
+                    )}
+                  </p>
+                </div> */}
               </div>
             ))}
           </div>

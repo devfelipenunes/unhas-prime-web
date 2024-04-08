@@ -23,6 +23,11 @@ function AddService() {
   };
 
   const handleAddService = () => {
+    if (!selectedPaymentMethod) {
+      toast.error("Coloque o meio de pagamento!");
+      return;
+    }
+
     api
       .post("/sales", {
         collaboratorId: selectedCollaborator.id,
@@ -36,14 +41,11 @@ function AddService() {
         setSelectedCollaborator(null);
         setSelectedPaymentMethod("");
         setShowAddServiceModal(false);
-        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
-  console.log(selectedCollaborator);
 
   const handleButtonClick = (method) => {
     setSelectedPaymentMethod(method);
@@ -98,9 +100,10 @@ function AddService() {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           },
           content: {
-            width: "90%",
-            margin: "auto",
-            height: "250px",
+            // width: "90%",
+            // margin: "auto",
+            width: 400,
+            height: 200,
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -111,8 +114,10 @@ function AddService() {
           },
         }}
       >
-        <p>Selecione o método de pagamento:</p>
-        <div className="flex justify-center mt-4 space-x-4">
+        <p className="text-lg font-semibold text-center">
+          Selecione o método de pagamento:
+        </p>
+        <div className="flex justify-center mt-9 space-x-4">
           <button
             onClick={() => handleButtonClick("Pix")}
             className={`btn ${

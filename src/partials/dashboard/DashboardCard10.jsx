@@ -6,28 +6,29 @@ function DashboardCard10({ data }) {
   const [collaborators, setCollaborators] = useState([]);
 
   useEffect(() => {
-    // Agrupa as vendas por colaborador
     const salesByCollaborator = data.reduce((acc, sale) => {
       const collaboratorId = sale.collaborator_id;
       const salePrice = parseFloat(sale.servico_preco);
-      const collaboratorPercentage = sale.collaborator_percentage;
+      const collaboratorPercentage =
+        parseFloat(sale.collaborator_percentage) / 100;
 
       if (!acc[collaboratorId]) {
         acc[collaboratorId] = {
           name: sale.collaborator_nome,
-          spent: salePrice,
-          percentage: collaboratorPercentage,
+          totalSpent: salePrice,
+          commissionEarned: salePrice * collaboratorPercentage,
         };
       } else {
-        acc[collaboratorId].spent += salePrice;
+        acc[collaboratorId].totalSpent += salePrice;
+        acc[collaboratorId].commissionEarned +=
+          salePrice * collaboratorPercentage;
       }
 
       return acc;
     }, {});
 
-    // Ordena os colaboradores pelo total gasto de forma decrescente
     const sortedCollaborators = Object.values(salesByCollaborator).sort(
-      (a, b) => b.spent - a.spent
+      (a, b) => b.totalSpent - a.totalSpent
     );
 
     setCollaborators(sortedCollaborators);
@@ -41,10 +42,8 @@ function DashboardCard10({ data }) {
         </h2>
       </header>
       <div className="p-3">
-        {/* Table */}
         <div className="overflow-x-auto">
           <table className="table-auto w-full">
-            {/* Table header */}
             <thead className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50">
               <tr>
                 <th className="p-2 whitespace-nowrap">
@@ -53,12 +52,13 @@ function DashboardCard10({ data }) {
                 <th className="p-2 whitespace-nowrap">
                   <div className="font-semibold text-end">Total Gasto</div>
                 </th>
+                <th className="p-2 whitespace-nowrap">
+                  <div className="font-semibold text-end">Comissão</div>
+                </th>
               </tr>
             </thead>
-            {/* Table body */}
             <tbody className="text-sm divide-y divide-slate-100 dark:divide-slate-700">
               {collaborators.map((collaborator) => {
-                console.log(collaborator);
                 return (
                   <tr key={collaborator.name}>
                     <td className="p-2 whitespace-nowrap">
@@ -68,7 +68,12 @@ function DashboardCard10({ data }) {
                     </td>
                     <td className="p-2 whitespace-nowrap">
                       <div className="text-end font-medium text-green-500">
-                        R$ {collaborator.spent.toFixed(2)}
+                        R$ {collaborator.totalSpent.toFixed(2)}
+                      </div>
+                    </td>
+                    <td className="p-2 whitespace-nowrap">
+                      <div className="text-end font-medium text-green-500">
+                        R$ {collaborator.commissionEarned.toFixed(2)}
                       </div>
                     </td>
                   </tr>
