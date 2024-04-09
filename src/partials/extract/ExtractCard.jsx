@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import api from "../../services/api";
 
 function ExtractCard({ data }) {
   const [dadosAgrupados, setDadosAgrupados] = useState({});
@@ -44,15 +43,23 @@ function ExtractCard({ data }) {
     setDadosAgrupados(agruparPorDia(data.sort(compararPorData)));
   }, [data]);
 
-  function formatarData(dataString) {
-    const data = new Date(dataString);
-    const dia = data.getDate();
-    const mes = data.getMonth() + 1;
+  function formatarDataHora(dataHora) {
+    const data = new Date(dataHora);
+
+    data.setHours(data.getHours() + 3);
+
+    const dia = String(data.getDate()).padStart(2, "0");
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
     const ano = data.getFullYear();
-    const horas = data.getHours();
-    const minutos = data.getMinutes();
-    const segundos = data.getSeconds();
-    return `${dia}/${mes}/${ano} - ${horas}:${minutos}:${segundos}`;
+    const horas = String(data.getHours()).padStart(2, "0");
+    const minutos = String(data.getMinutes()).padStart(2, "0");
+    const segundos = String(data.getSeconds()).padStart(2, "0");
+
+    const dataFormatada = `${dia}/${mes}/${ano} - ${horas}:${minutos}:${segundos}`;
+    return dataFormatada;
+  }
+  function normalizarValor(valor) {
+    return parseFloat(valor.replace(",", "."));
   }
 
   return (
@@ -66,7 +73,7 @@ function ExtractCard({ data }) {
         {Object.keys(dadosAgrupados).map((dia) => {
           const somaDia = dadosAgrupados[dia].reduce(
             (total, collaborator) =>
-              total + parseFloat(collaborator.servico_preco),
+              total + normalizarValor(collaborator.servico_preco),
             0
           );
 
@@ -127,13 +134,16 @@ function ExtractCard({ data }) {
                           {collaborator.servico_nome}
                         </td>
                         <td className="p-2 border border-slate-100 dark:border-slate-700 text-center">
-                          R$ {collaborator.servico_preco}
+                          R${" "}
+                          {normalizarValor(collaborator.servico_preco).toFixed(
+                            2
+                          )}
                         </td>
                         <td className="p-2 border border-slate-100 dark:border-slate-700 text-center">
                           {collaborator.sale_paymentMethod}
                         </td>
                         <td className="p-2 border border-slate-100 dark:border-slate-700 text-end">
-                          {formatarData(collaborator.sale_created_at)}
+                          {formatarDataHora(collaborator.sale_created_at)}
                         </td>
                       </tr>
                     ))}

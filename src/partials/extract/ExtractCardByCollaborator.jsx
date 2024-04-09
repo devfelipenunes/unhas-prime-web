@@ -9,9 +9,13 @@ function ExtractCardByCollaborator({ data }) {
     function groupDataByDayAndCollaborator(data) {
       const grouped = {};
       data.forEach((item) => {
-        const date = new Date(item.sale_created_at).toLocaleDateString("pt-BR");
-        const time = new Date(item.sale_created_at).toLocaleTimeString("pt-BR");
+        const saleCreatedAt = new Date(item.sale_created_at);
+        saleCreatedAt.setHours(saleCreatedAt.getHours() + 3);
+
+        const date = saleCreatedAt.toLocaleDateString("pt-BR");
+        const time = saleCreatedAt.toLocaleTimeString("pt-BR");
         const dateTime = `${date} - ${time}`;
+
         const collaboratorId = item.collaborator_id;
         if (!grouped[date]) {
           grouped[date] = {};
